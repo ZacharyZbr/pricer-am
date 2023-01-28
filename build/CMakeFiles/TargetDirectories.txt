@@ -1,6 +1,0 @@
-D:/mcam-skel/build/CMakeFiles/test-parser.dir
-D:/mcam-skel/build/CMakeFiles/mc-example.dir
-D:/mcam-skel/build/CMakeFiles/ALL_BUILD.dir
-D:/mcam-skel/build/CMakeFiles/ZERO_CHECK.dir
-D:/mcam-skel/build/src/3rdparty/jlparser/CMakeFiles/parser-test.dir
-D:/mcam-skel/build/src/3rdparty/jlparser/CMakeFiles/ALL_BUILD.dir
