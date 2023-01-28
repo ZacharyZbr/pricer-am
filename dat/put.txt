@@ -1,0 +1,15 @@
+# prix: 10.47
+model type                         <string>   bs
+model size                         <int>      1
+strike                             <float>    -110
+spot                               <vector>    100
+maturity                           <float>    1
+volatility                         <vector>   0.2
+interest rate                      <float>     0.1
+correlation                        <float>     0.5
+dividend rate                      <vector>   0.0
+option type                        <string>   exchange
+payoff coefficients                <vector>   -1.
+dates                              <int>      10
+MC iterations                      <int>      100000
+degree for polynomial regression   <int>      6
