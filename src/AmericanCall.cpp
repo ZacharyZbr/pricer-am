@@ -19,5 +19,10 @@ AmericanCall::AmericanCall(double T, int dates, int size, double strike) {
 double AmericanCall::payoff(const PnlMat* path, double t) {
 	int index = t * dates_ / T_;
 	double assetPrice = pnl_mat_get(path, index, 0);
-	return assetPrice - strike_;
+	if (assetPrice - strike_ > 0) {
+		return assetPrice - strike_;
+	}
+	else {
+		return 0;
+	}
 }
