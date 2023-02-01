@@ -1,13 +1,16 @@
 #include "Option.hpp"
 
 
-class BasketOption : Option
+class BasketOption : public Option
 {
 public:
     double strike_; /// Strike de l'option
-    PnlVect* lambas_; /// Les lambdas des sous jacents
+    PnlVect* lambdas_; /// Les lambdas des sous jacents
 
     BasketOption(double T, int dates, int size, double strike, PnlVect *lambda );
+
+   
+    double payoff(const PnlVect* spotPrices) override;
 
     /**
      * Calcule la valeur du payoff sur la trajectoire

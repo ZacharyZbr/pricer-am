@@ -8,6 +8,16 @@ AmericanCall::AmericanCall(double T, int dates, int size, double strike) {
 }
 
 
+double AmericanCall::payoff(const PnlVect* spotPrices) {
+	double priceSpot = pnl_vect_get(spotPrices, 0);
+	if (priceSpot - strike_ > 0) {
+		return priceSpot - strike_ ;
+	}
+	else {
+		return 0;
+	}
+}
+
 /**
  * Calcule la valeur du payoff sur la trajectoire
  *

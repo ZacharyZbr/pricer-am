@@ -3,31 +3,55 @@
 #include "pnl/pnl_random.h"
 #include "pnl/pnl_vector.h"
 #include "PricingResults.hpp"
+#include "jlparser/parser.hpp"
+#include "BasketOption.hpp"
+#include "MonteCarlo.hpp"
+#include "BlackScholesModel.hpp"
+
 
 using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
-    PnlVect *G = pnl_vect_new();
-    PnlRng *rng = pnl_rng_create(PNL_RNG_MERSENNE);
-    int M = 1E5;
-    int dim = 2;
-    pnl_rng_sseed(rng, time(NULL));
+    double T, r, strike, rho;
+    PnlVect* spot, * sigma, * divid, * lambda;
+    string type;
+    int size;
+    int n_samples;
+    int dates;
+    int degree;
 
-    double acc = 0.;
+    char* infile = argv[1];
+    Param* P = new Parser(infile);
 
-    for (int i = 0; i < M; i++)
+    P->extract("option type", type);
+    P->extract("maturity", T);
+    P->extract("model size", size);
+    P->extract("spot", spot, size);
+    P->extract("volatility", sigma, size);
+    P->extract("interest rate", r);
+    P->extract("correlation", rho);
+    P->extract("payoff coefficients", lambda, size);
+    P->extract("dates", dates);
+    P->extract("degree for polynomial regression", degree);
+    if (P->extract("dividend rate", divid, size, true) == false)
     {
-        pnl_vect_rng_normal(G, dim, rng);
-        double tmp = pnl_vect_norm_two(G);
-        acc += tmp;
+        divid = pnl_vect_create_from_zero(size);
     }
+    P->extract("strike", strike);
+    P->extract("MC iterations", n_samples);
 
-    acc /= M;
+    BasketOption* optiond5 = new BasketOption(T, dates, size, strike, lambda);
+    BlackScholesModel* mod = new BlackScholesModel(size, r, rho, sigma, spot, divid);
+    MonteCarlo* myMC = new MonteCarlo(mod, optiond5);
+    double price = myMC->price(dates, n_samples, degree);
 
-    cout << PricingResults(acc) << endl;
+    std::cout << "le prix : " << price << std::endl;
 
-    pnl_vect_free(&G);
-    pnl_rng_free(&rng);
+    pnl_vect_free(&spot);
+    pnl_vect_free(&sigma);
+    pnl_vect_free(&divid);
+    delete P;
+
     return 0;
 }

@@ -9,6 +9,7 @@ public:
 
     AmericanCall(double T, int dates, int size, double strike);
 
+    double payoff(const PnlVect* spotPrices);
 
     /**
      * Calcule la valeur du payoff sur la trajectoire
