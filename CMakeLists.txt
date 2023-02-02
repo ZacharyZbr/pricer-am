@@ -47,7 +47,7 @@ add_subdirectory(src/3rdparty/jlparser)
 add_executable(test-parser src/test_parser.cpp)
 target_link_libraries(test-parser jl_parser ${LIBS})
 
-add_executable(mc-example src/mc_example.cpp src/PricingResults.cpp src/MonteCarlo.cpp src/BasketOption.cpp src/BlackScholesModel.cpp)
+add_executable(mc-example src/mc_example.cpp src/PricingResults.cpp src/MonteCarlo.cpp src/BasketOption.cpp src/GeometricPut.cpp src/BlackScholesModel.cpp src/Performance.cpp)
 target_link_libraries(mc-example jl_parser ${LIBS})
 
 # Print compiler flags

@@ -69,21 +69,17 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
             pnl_mat_get_row(res, path, k + i * (nbTimeSteps + 1));
             
             pnl_mat_set_row(X, res, i);
+
+            pnl_mat_extract_subblock(subBlock, path, i * (nbTimeSteps + 1), nbTimeSteps + 1, 0, nbAssets);
+            double payoff = opt_->payoff(subBlock, pnl_vect_get(tau_l, i));
+
+            pnl_vect_set(Y, i, payoff);
             
         }
 
         //pnl_mat_print(X);
 
         //std::cout << "ca marche" << std::endl;
-
-        for (int row = 0; row < nbSample; row++) {
-            pnl_mat_extract_subblock(subBlock, path, row * (nbTimeSteps + 1), nbTimeSteps + 1, 0, nbAssets);
-            double payoff = opt_->payoff(subBlock, pnl_vect_get(tau_l, row));
-            //pnl_mat_print(subBlock);
-
-            //std::cout << "payoff du block : " << row << " evalue au temps " << pnl_vect_get(tau_l, row) << " qui correspond a l'index " << pnl_vect_get(tau_l, row) * nbTimeSteps / opt_->T_ << " vaut : " << payoff << std::endl;
-            pnl_vect_set(Y, row, payoff);
-        }
         
         //std::cout << "On solve" << std::endl;
 
@@ -113,7 +109,8 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
     
     for (int l = 0; l < nbSample; l++) {
         pnl_mat_extract_subblock(subBlock, path, l * (nbTimeSteps + 1), nbTimeSteps + 1, 0, nbAssets);
-        price += opt_->payoff(subBlock, pnl_vect_get(tau_l, l));
+        double tau = pnl_vect_get(tau_l, l);
+        price += opt_->payoff(subBlock, tau) * exp( - mod_->r_ * tau) ;
     }
     price = price / nbSample;
     pnl_mat_free(&subBlock);

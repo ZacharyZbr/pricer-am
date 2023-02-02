@@ -1,7 +1,7 @@
 #include "Option.hpp"
 
 
-class GeometricPut : Option
+class GeometricPut : public Option
 {
 public:
     double strike_; /// Strike de l'option
@@ -17,4 +17,6 @@ public:
      * @return phi(trajectoire)
      */
     double payoff(const PnlMat* path, double t) override;
+
+    double payoff(const PnlVect *spot) override;
 };

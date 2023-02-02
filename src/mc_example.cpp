@@ -5,8 +5,10 @@
 #include "PricingResults.hpp"
 #include "jlparser/parser.hpp"
 #include "BasketOption.hpp"
+#include "GeometricPut.hpp"
 #include "MonteCarlo.hpp"
 #include "BlackScholesModel.hpp"
+#include "Performance.hpp"
 
 
 using namespace std;
@@ -41,7 +43,7 @@ int main(int argc, char** argv)
     P->extract("strike", strike);
     P->extract("MC iterations", n_samples);
 
-    BasketOption* optiond5 = new BasketOption(T, dates, size, strike, lambda);
+    Performance* optiond5 = new Performance(T, dates, size, strike, lambda);
     BlackScholesModel* mod = new BlackScholesModel(size, r, rho, sigma, spot, divid);
     MonteCarlo* myMC = new MonteCarlo(mod, optiond5);
     double price = myMC->price(dates, n_samples, degree);

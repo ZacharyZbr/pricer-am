@@ -1,11 +1,11 @@
 #include "Option.hpp"
 
 
-class Performance : Option
+class Performance : public Option
 {
 public:
     double strike_; /// Strike de l'option
-    PnlVect* lambas_; /// Les lambdas des sous jacents
+    PnlVect* lambdas_; /// Les lambdas des sous jacents
 
     Performance(double T, int dates, int size, double strike, PnlVect* lambda);
 
@@ -18,4 +18,6 @@ public:
      * @return phi(trajectoire)
      */
     double payoff(const PnlMat* path, double t) override;
+
+    double payoff(const PnlVect* spot) override;
 };
