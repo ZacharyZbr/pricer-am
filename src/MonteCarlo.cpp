@@ -34,21 +34,13 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
     // Params simulation
     PnlBasis *hermitePolynom = pnl_basis_create_from_degree(PNL_BASIS_HERMITE, degree, nbAssets);
 
-    //std::cout << "caracteristiques du polynome " << std::endl;
-    //pnl_basis_print(hermitePolynom);
     PnlVect *tau_l = pnl_vect_create_from_scalar(nbSample, opt_->T_);
 
     PnlVect *alpha = pnl_vect_create_from_zero(nbAssets);
 
-    //std::cout << "On commence a simuler path" << std::endl;
-
     PnlMat* path = pnl_mat_create((nbTimeSteps + 1 ) * nbSample, nbAssets);
 
     simulateAllPaths(path, nbSample, nbTimeSteps, nbAssets);
-
-    //std::cout << "on a simule path" << std::endl;
-
-    //pnl_mat_print(path);
 
     PnlMat *X = pnl_mat_create(nbSample, nbAssets);
 
@@ -58,12 +50,9 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
     
     PnlVect* Y = pnl_vect_create(nbSample);
     
-
     double price = 0;
 
     for (int k = nbTimeSteps; k > 0; k--) {
-
-        // std::cout << "Boucle : " << k << std::endl;
 
         for (int i = 0; i < nbSample; i++) {
             pnl_mat_get_row(res, path, k + i * (nbTimeSteps + 1));
@@ -71,26 +60,17 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
             pnl_mat_set_row(X, res, i);
 
             pnl_mat_extract_subblock(subBlock, path, i * (nbTimeSteps + 1), nbTimeSteps + 1, 0, nbAssets);
+            
             double payoff = opt_->payoff(subBlock, pnl_vect_get(tau_l, i));
 
             pnl_vect_set(Y, i, payoff);
             
         }
 
-        //pnl_mat_print(X);
-
-        //std::cout << "ca marche" << std::endl;
-        
-        //std::cout << "On solve" << std::endl;
-
-        // std::cout << "La valeur de alpha après le solveur de taille  " << alpha->size << std::endl;
-
         pnl_basis_fit_ls(hermitePolynom, alpha, X, Y);
-        //std::cout << "La valeur de alpha après le solveur de taille  " << alpha->size << std::endl;
-        //pnl_vect_print(alpha);
-       
-
+        
         for (int l = 0; l < nbSample; l++) {
+
             pnl_mat_extract_subblock(subBlock, path, l * (nbTimeSteps + 1), nbTimeSteps + 1, 0, nbAssets);
             double payoff_tk = opt_->payoff(subBlock, k * opt_->T_ / nbTimeSteps);
             pnl_mat_get_row(res, X, l);
@@ -120,16 +100,10 @@ double MonteCarlo::price(int nbTimeSteps, int nbSample, int degree) {
     double price_zero = opt_->payoff(mod_->spot_);
     mod_->~BlackScholesModel();
 
-   /* std::cout << price << std::endl;
-    std::cout << price_zero << std::endl;*/
-
     if (price > price_zero) {
         return price;
     }
     else {
         return price_zero;
     }
-
-
-    
 }

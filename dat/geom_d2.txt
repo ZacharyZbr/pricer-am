@@ -8,7 +8,7 @@ volatility                         <vector>   0.2
 interest rate                      <float>    0.05
 correlation                        <float>    0.2
 dividend rate                      <vector>   0.0
-option type                        <string>   geometric_pute
+option type                        <string>   geometric_put
 dates                              <int>      10
 MC iterations                      <int>      100000
 degree for polynomial regression   <int>      3
