@@ -2,6 +2,7 @@
 #include "Performance.hpp"
 #include "GeometricPut.hpp"
 #include "BasketOption.hpp"
+#include "OptionPriceNotComputedException.hpp"
 
 PriceComputer::PriceComputer(Param *P) {
 	this->P = P;
@@ -54,7 +55,8 @@ double PriceComputer::compute_put_geom() {
 }
 
 double PriceComputer::compute_price() {
-    
+
+    try {
         if (type._Equal("bestof")) {
             PnlVect* lambdas;
             P->extract("payoff coefficients", lambdas, size);
@@ -68,13 +70,12 @@ double PriceComputer::compute_price() {
             P->extract("payoff coefficients", lambdas, size);
             return compute_basket(lambdas);
         }
-        else {
-            std::cout<<"Sorry this code does not price this option type, the price will be 0"<<std::endl;
-        }
-    
+        else { throw OptionPriceNotComputedException("Sorry this pricer does not compute the price of this kind of option"); }
+    }
+    catch (OptionPriceNotComputedException e) {
+        std::cout<< e.what();
+        abort();
+    }
 
-
-	return 0;
 }
 
-////P->extract("payoff coefficients", lambda, size);
